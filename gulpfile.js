@@ -1,14 +1,23 @@
-// Include gulp
+// includes
 var gulp = require('gulp'); 
-
-// Include Our Plugins
 var jshint = require('gulp-jshint');
 var sass = require('gulp-sass');
-var concat = require('gulp-concat');
+var del = require('del');
 var uglify = require('gulp-uglify');
 var rename = require('gulp-rename');
-var browserify = require('gulp-browserify');
+var browserify = require('browserify');
+var source = require('vinyl-source-stream');
+var buffer = require('gulp-buffer');
 var browserSync = require('browser-sync');
+
+// clean up tasks
+gulp.task('clean-js', function(done) {
+    del(['build/js'], done);
+});
+
+gulp.task('clean-css', function(done) {
+    del(['build/css'], done);
+});
 
 // lint
 gulp.task('lint', function() {
@@ -18,51 +27,36 @@ gulp.task('lint', function() {
 });
 
 // sass
-gulp.task('sass', function() {
+gulp.task('sass', ['clean-css'], function() {
     return gulp.src('src/scss/*.scss')
         .pipe(sass())
         .pipe(gulp.dest('./build/css'));
 });
 
-// with browserify
-gulp.task('scripts', function() {
-    // Single entry point to browserify
-    gulp.src('src/js/app.js')
-        .pipe(browserify({
-          insertGlobals : true,
-          debug : !gulp.env.production
-        }))
-        .pipe(rename('all.js'))
-        .pipe(gulp.dest('./build/js'))
+// browserify
+gulp.task('js', ['clean-js', 'lint'], function() {
+    return browserify('src/js/app.js')
+        .bundle()
+        .pipe(source('all.js'))
+        .pipe(gulp.dest('./build/js/'))
+        .pipe(buffer())
         .pipe(rename('all.min.js'))
         .pipe(uglify())
-        .pipe(gulp.dest('./build/js'));
+        .pipe(gulp.dest('./build/js/'));
 });
 
-// without browserify
-// gulp.task('scripts', function() {
-//     return gulp.src('js/*.js')
-//         .pipe(concat('all.js'))
-//         .pipe(gulp.dest('dist'))
-//         .pipe(rename('all.min.js'))
-//         .pipe(uglify())
-//         .pipe(gulp.dest('dist'));
-// });
-
-// browser reload
+//browser-sync will reload when compiled versions change
 gulp.task('browser-sync', function() {
-    browserSync.init(['*.html', './build/css/*.css', './build/js/*.js'], {
+    return browserSync.init(['*.html', './build/css/*.css', './build/js/*.js'], {
         server: {
             baseDir: './'
         }
     });
 });
 
-// watch and recompile
-gulp.task('watch', function() {
-    gulp.watch('src/js/*.js', ['lint', 'scripts']);
-    gulp.watch('src/scss/*.scss', ['sass']);
+// default task when you run 'gulp'
+gulp.task('default', ['clean-js', 'clean-css', 'lint', 'sass', 'js', 'browser-sync'], function() {
+    // watch and recompile
+    gulp.watch('src/js/*.js', ['clean-js', 'lint', 'js', browserSync.reload]);
+    gulp.watch('src/scss/*.scss', ['clean-css', 'sass', browserSync.reload]);
 });
-
-// watch will recompile and browser-sync will reload when compiled versions change
-gulp.task('default', ['lint', 'sass', 'scripts', 'browser-sync', 'watch']);
