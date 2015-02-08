@@ -1,8 +1,8 @@
 {
-  "name": "TIAA_Web_V1",
+  "name": "GulpStarter",
   "version": "0.0.0",
   "private": true,
-  "description": "www.tiaa-cref.org",
+  "description": "2015-02-01",
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
