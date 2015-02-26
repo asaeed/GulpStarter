@@ -4,7 +4,10 @@ $back-color: #333;
 
 
 body {
-  font: 100% $font-stack;
-  color: $font-color;
   background-color: $back-color;
+  color: $font-color;
+}
+
+.unused {
+	color: red;
 }

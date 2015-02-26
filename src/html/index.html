@@ -1,0 +1,20 @@
+
+{% extends "layouts/default.html" %}
+
+{% block title %}
+	Index page
+{% endblock %}
+
+{% block content %}
+	index.html content
+
+	<!-- precompiled swig template -->
+	<div id="precompiled-template">
+		{% include "partials/tile.html" with { name: 'bob' } only %}
+	</div>
+
+	<!-- runtime swig template -->
+	<div id="runtime-template">
+		
+	</div>
+{% endblock %}

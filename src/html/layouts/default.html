@@ -57,25 +57,11 @@
         </nav>
 
         <header>
-            <h2>
-	Index page
-</h2>
+            <h2>{% block title %}Default Title{% endblock %}</h2>
         </header>
 
         <section class="content">
-        
-	index.html content
-
-	<!-- precompiled swig template -->
-	<div id="precompiled-template">
-		Hello bob
-	</div>
-
-	<!-- runtime swig template -->
-	<div id="runtime-template">
-		
-	</div>
-
+        {% block content %}Some default content{% endblock %}
         </section>
 
         <footer>

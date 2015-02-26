@@ -1,4 +1,6 @@
 body {
-  font: 100% Helvetica, sans-serif;
-  color: #fff;
-  background-color: #333; }
+  background-color: #333;
+  color: #fff; }
+
+.unused {
+  color: red; }
